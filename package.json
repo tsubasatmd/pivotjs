@@ -1,0 +1,35 @@
+{
+  "name": "Pivot",
+  "version": "0.0.1",
+  "description": "Pivot table with multiple measure implementation for Javascript",
+  "main": "lib/pivotjs.js",
+  "keywords": ["pivot", "pivot table", "multiple measure"]
+  "scripts": {
+    "build": "./node_modules/.bin/coffee -c -o lib/ src/pivotjs.coffee",
+    "test": "./node_modules/.bin/karma start karma.conf.js"
+  },
+  "author": "tsubasa",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.11.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coffee-script": "^1.10.0",
+    "d3": "^3.5.17",
+    "karma": "^0.13.22",
+    "karma-chai": "^0.1.0",
+    "karma-chai-plugins": "^0.7.0",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-coffee-preprocessor": "^1.0.0",
+    "karma-mocha": "^1.0.1",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "karma-requirejs": "^1.0.0",
+    "karma-sinon": "^1.0.5",
+    "mocha": "^2.4.5",
+    "phantomjs": "^1.9.19",
+    "phantomjs-prebuilt": "^2.1.7",
+    "requirejs": "^2.2.0",
+    "sinon": "^1.17.4"
+  }
+}
