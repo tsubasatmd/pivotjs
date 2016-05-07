@@ -1,9 +1,9 @@
 {
-  "name": "Pivot",
+  "name": "pivotjs",
   "version": "0.0.1",
   "description": "Pivot table with multiple measure implementation for Javascript",
   "main": "lib/pivotjs.js",
-  "keywords": ["pivot", "pivot table", "multiple measure"]
+  "keywords": ["pivot", "pivot table", "multiple measure"],
   "scripts": {
     "build": "./node_modules/.bin/coffee -c -o lib/ src/pivotjs.coffee",
     "test": "./node_modules/.bin/karma start karma.conf.js"
