@@ -370,7 +370,7 @@ describe 'Pivot', ->
     it 'should return record count which value is null or undefined', ->
       agg =
         records: records
-      pivot.aggregationFunctions['counta']('val', agg).should.equal 0
+      pivot.aggregationFunctions['counta']('val', agg).should.equal 8
 
   describe 'unique', ->
     it 'should return unique record count', ->

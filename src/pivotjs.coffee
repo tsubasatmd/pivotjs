@@ -277,7 +277,7 @@ class Pivot
   counta =  (measureKey, aggregator) ->
     cnt = 0
     for record in aggregator.records
-      cnt++ if record[measureKey] in [null, undefined]
+      cnt++ unless record[measureKey] in [null, undefined]
     cnt
 
   unique =  (measureKey, aggregator) ->
