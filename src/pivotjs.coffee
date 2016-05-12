@@ -9,7 +9,8 @@ class Pivot
       float: ',.2f'
       abbreviation: '2s'
       percent: '.2%'
-    @defaultFormat = @formats.int
+    @defaultFormat = 'int'
+    @defaultFormatExpression = @formats[@defaultFormat]
 
     @formatFunction = (val, format) -> val
 
@@ -25,7 +26,8 @@ class Pivot
           else
             measure.format
       else
-        measure.format = @formats[@defaultFormat]
+        measure.format = @defaultFormat
+        measure.formatExpression = @defaultFormatExpression
 
     @rowKeys = []
     @colKeys = []
@@ -222,7 +224,7 @@ class Pivot
         if colKeys.length isnt 0
           @map[serializedSlicedRowKeys] = {} if serializedSlicedRowKeys not of @map
           if serializedColKey not of @map[serializedSlicedRowKeys]
-            @map[serializedSlicedRowKeys][serializedColKey] = new Composer @, slicedRowKeys, colKeys 
+            @map[serializedSlicedRowKeys][serializedColKey] = new Composer @, slicedRowKeys, colKeys
 
     for measure in @measureAttrs
       @grandTotal.add measure, record
@@ -420,7 +422,7 @@ class Aggregator
         null
     return null if _val is null
 
-    @composer.pivot.formatFunction _val, (@measure.formatExpression or @composer.pivot.defaultFormat)
+    @composer.pivot.formatFunction _val, (@measure.formatExpression or @composer.pivot.defaultFormatExpression)
 
   evaluate: (node) ->
     switch node.type

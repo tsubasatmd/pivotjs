@@ -56,7 +56,6 @@ describe 'Pivot', ->
         {
           name: 'val'
           key: 'val'
-          format: 'int'
           aggregation: 'average'
         }
       ]
@@ -68,7 +67,7 @@ describe 'Pivot', ->
       pivot.rowAttrs.should.equal param.rows
       pivot.colAttrs.should.equal param.cols
       pivot.measureAttrs.should.equal param.measures
-      
+
       pivot.rowKeys.should.have.length 0
       pivot.colKeys.should.have.length 0
       pivot.measureKeys.should.have.length 0
@@ -80,6 +79,9 @@ describe 'Pivot', ->
       pivot.grandTotal.should.be.instanceof Composer
       pivot.rowTotals.should.be.empty
       pivot.colTotals.should.be.empty
+
+      pivot.measureAttrs[0].format.should.equal 'int'
+      pivot.measureAttrs[1].format.should.equal 'int'
 
   describe 'getRowKeys', ->
     it 'should return rowsKey', ->
@@ -200,7 +202,7 @@ describe 'Pivot', ->
       pivot.setFormatFunction func
 
       pivot.formatFunction.should.equal func
-  
+
   describe 'populate', ->
     it 'should call processRecord', ->
       spy = sinon.spy pivot, 'processRecord'
@@ -282,7 +284,7 @@ describe 'Pivot', ->
     it 'should call value method of correct composer when both row, col exist', ->
       rowKey = ['a', 'a1']
       colKey = ['2016-01-01']
-      
+
       composer = pivot.map[pivot.serializeKey rowKey][pivot.serializeKey colKey]
       spy = sinon.spy composer, 'values'
 
@@ -301,7 +303,7 @@ describe 'Pivot', ->
     it 'should call value method of rowTotal composer when col length is 0', ->
       rowKey = ['a', 'a1']
       colKey = []
-      
+
       composer = pivot.rowTotals[pivot.serializeKey rowKey]
       spy = sinon.spy composer, 'values'
 
@@ -312,7 +314,7 @@ describe 'Pivot', ->
     it 'should call value method of colTotal composer when row length is 0', ->
       rowKey = []
       colKey = ['2016-01-01']
-      
+
       composer = pivot.colTotals[pivot.serializeKey colKey]
       spy = sinon.spy composer, 'values'
 
@@ -331,7 +333,7 @@ describe 'Pivot', ->
   describe 'getComposerWithGap', ->
     beforeEach -> pivot.populate()
 
-    it 'should return composer with same colKey when without gap', ->      
+    it 'should return composer with same colKey when without gap', ->
       agg = pivot.getComposerWithGap ['a', 'a2'], ['2016-01-02']
 
       agg.rowKey.should.eql ['a', 'a2']
