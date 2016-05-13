@@ -66,7 +66,43 @@ describe 'Aggregator', ->
         key2: 250
       agg.value().should.equal 250
 
-    it 'calculated value with expression should be returned when measure does not have aggregation'
+    it 'calculated value with expression should be returned when measure does not have aggregation', ->
+      param = {}
+      pivot = new Pivot param
+      pivot.setAggregatorEvaluateFunction aggregatorEvaluateFunction
+      composer = new Composer pivot, ['key1'], ['key2']
+
+      measure =
+        name: 'masure2'
+        key: 'key1'
+        format: 'float'
+        expression: 'a + b'
+
+      agg = new Aggregator composer, measure
+
+      agg.push
+        key1: 150
+        key2: 300
+      agg.value().should.equal 'expression is a + b'
+
+    it 'null should be returned when evaluate function throws error', ->
+      param = {}
+      pivot = new Pivot param
+      pivot.setAggregatorEvaluateFunction aggregatorEvaluateFunctionWithError
+      composer = new Composer pivot, ['key1'], ['key2']
+
+      measure =
+        name: 'masure2'
+        key: 'key1'
+        format: 'float'
+        expression: 'a + b'
+
+      agg = new Aggregator composer, measure
+
+      agg.push
+        key1: 150
+        key2: 300
+      should.equal agg.value(), null
 
   describe 'formattedValue', ->
     it 'val formatted with default format should be returned when hasCache and measure does not have formatExpression', ->
@@ -106,3 +142,9 @@ describe 'Aggregator', ->
 formatFunction = (val, formatExpression) ->
   d3.format(formatExpression) val
 
+
+aggregatorEvaluateFunction = (expression) ->
+  "expression is #{expression}"
+
+aggregatorEvaluateFunctionWithError = (expression) ->
+  throw new Error 'evaluate failed'

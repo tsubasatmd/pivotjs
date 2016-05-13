@@ -199,6 +199,13 @@ describe 'Pivot', ->
   describe 'setFormatFunction', ->
     it 'should be set function', ->
       func = -> 'test'
+      pivot.setAggregatorEvaluateFunction func
+
+      pivot.aggregatorEvaluateFunction.should.equal func
+
+  describe 'setFormatFunction', ->
+    it 'should be set function', ->
+      func = -> 'test'
       pivot.setFormatFunction func
 
       pivot.formatFunction.should.equal func
