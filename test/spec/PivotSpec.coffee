@@ -219,23 +219,30 @@ describe 'Pivot', ->
       rowKey1 = pivot.serializeKey ['a', 'a1']
       rowKey2 = pivot.serializeKey ['a', 'a2']
 
+      colKey1 = pivot.serializeKey ['2016-01-01']
+
       ### add new record ###
       pivot.processRecord records[0]
 
       # comporser for rowKey1 exist
       pivot.map[rowKey1].should.exist
 
-      # rotTotal for ['a', 'a1'] exist and aggregator have 1 record
+      # rowTotal for ['a', 'a1'] exist and aggregator have 1 record
       pivot.rowTotals[rowKey1].should.exist
       pivot.rowTotals[rowKey1].aggregators.should.have.length 2
       pivot.rowTotals[rowKey1].aggregators[0].aggregator.records.should.have.length 1
       pivot.rowTotals[rowKey1].aggregators[1].aggregator.records.should.have.length 1
 
-      # rotTotal for ['a'] exist and aggregator have 1 record
+      # rowTotal for ['a'] exist and aggregator have 1 record
       pivot.rowTotals[rowKey].should.exist
       pivot.rowTotals[rowKey].aggregators.should.have.length 2
       pivot.rowTotals[rowKey].aggregators[0].aggregator.records.should.have.length 1
       pivot.rowTotals[rowKey].aggregators[1].aggregator.records.should.have.length 1
+
+      pivot.colTotals[colKey1].should.exist
+      pivot.colTotals[colKey1].aggregators.should.have.length 2
+      pivot.colTotals[colKey1].aggregators[0].aggregator.records.should.have.length 1
+      pivot.colTotals[colKey1].aggregators[1].aggregator.records.should.have.length 1
 
       # each aggregator for grandTotal composer have 1 record
       pivot.grandTotal.aggregators.should.have.length 2
@@ -253,21 +260,27 @@ describe 'Pivot', ->
       # comporser for rowKey2 exist
       pivot.map[rowKey2].should.exist
 
-      # rotTotal for ['a', 'a2'] exist and aggregator have 1 record
+      # rowTotal for ['a', 'a2'] exist and aggregator have 1 record
       pivot.rowTotals[rowKey2].should.exist
       pivot.rowTotals[rowKey2].aggregators.should.have.length 2
       pivot.rowTotals[rowKey2].aggregators[0].aggregator.records.should.have.length 1
       pivot.rowTotals[rowKey2].aggregators[1].aggregator.records.should.have.length 1
 
-      # aggregator for rotTotal for ['a'] have 2 record (plus 1)
+      # aggregator for rowTotal for ['a'] have 2 record (plus 1)
       pivot.rowTotals[rowKey].aggregators.should.have.length 2
       pivot.rowTotals[rowKey].aggregators[0].aggregator.records.should.have.length 2
       pivot.rowTotals[rowKey].aggregators[1].aggregator.records.should.have.length 2
 
-      # records of aggregator for rotatl['a', 'a1'] is not changed
+      # records of aggregator for rowTotals['a', 'a1'] is not changed
       pivot.rowTotals[rowKey1].aggregators.should.have.length 2
       pivot.rowTotals[rowKey1].aggregators[0].aggregator.records.should.have.length 1
       pivot.rowTotals[rowKey1].aggregators[1].aggregator.records.should.have.length 1
+
+      # aggregator for colTotals['2016-01-01'] have 2 records (plus 1)
+      pivot.colTotals[colKey1].should.exist
+      pivot.colTotals[colKey1].aggregators.should.have.length 2
+      pivot.colTotals[colKey1].aggregators[0].aggregator.records.should.have.length 2
+      pivot.colTotals[colKey1].aggregators[1].aggregator.records.should.have.length 2
 
       # record count of aggregator for grandtoral is 2 (plus 1)
       pivot.grandTotal.aggregators.should.have.length 2
