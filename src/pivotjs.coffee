@@ -196,42 +196,62 @@ class Pivot
       @processRecord record
 
   processRecord: (record) =>
-    colKeys = (record[c.id] for c in @colAttrs)
     rowKeys = (record[r.id] for r in @rowAttrs)
+    colKeys = (record[c.id] for c in @colAttrs)
 
     serializedRowKey = @serializeKey rowKeys
     serializedColKey = @serializeKey colKeys
 
-    if colKeys.length isnt 0
+    serializedColKeysList = []
+    for key, index in colKeys
+      slicedColKeys = colKeys[0..index]
+      serializedSlicedColKeys = @serializeKey slicedColKeys
+      serializedColKeysList.push serializedSlicedColKeys
+
       if serializedColKey not in @serializedColKeys
         @colKeys.push colKeys
         @serializedColKeys.push serializedColKey
-      @colTotals[serializedColKey] = new Composer @, [], colKeys unless @colTotals[serializedColKey]
+
+      unless @colTotals[serializedSlicedColKeys]
+        @colTotals[serializedSlicedColKeys] = new Composer @, [], slicedColKeys
 
     serializedRowKeyList = []
     for key, index in rowKeys
       slicedRowKeys = rowKeys[0..index]
       serializedSlicedRowKeys = @serializeKey slicedRowKeys
       serializedRowKeyList.push serializedSlicedRowKeys
-      if rowKeys.length isnt 0
-        if serializedRowKey not in @serializedRowKeys
-          @rowKeys.push rowKeys
-          @serializedRowKeys.push serializedRowKey
 
-        unless @rowTotals[serializedSlicedRowKeys]
-          @rowTotals[serializedSlicedRowKeys] = new Composer @, slicedRowKeys, []
+      if serializedRowKey not in @serializedRowKeys
+        @rowKeys.push rowKeys
+        @serializedRowKeys.push serializedRowKey
 
-        if colKeys.length isnt 0
-          @map[serializedSlicedRowKeys] = {} if serializedSlicedRowKeys not of @map
-          if serializedColKey not of @map[serializedSlicedRowKeys]
-            @map[serializedSlicedRowKeys][serializedColKey] = new Composer @, slicedRowKeys, colKeys
+      unless @rowTotals[serializedSlicedRowKeys]
+        @rowTotals[serializedSlicedRowKeys] = new Composer @, slicedRowKeys, []
+
+      if colKeys.length isnt 0
+        @map[serializedSlicedRowKeys] = {} if serializedSlicedRowKeys not of @map
+
+        for cKey in serializedColKeysList
+          if cKey not of @map[serializedSlicedRowKeys]
+            cKeys = @deserializeKey cKey
+            @map[serializedSlicedRowKeys][cKey] = new Composer @, slicedRowKeys, cKeys
 
     for measure in @measureAttrs
       @grandTotal.add measure, record
-      @colTotals[serializedColKey]?.add measure, record
-      for key in serializedRowKeyList
-        @rowTotals[key]?.add measure, record
-        @map[key]?[serializedColKey]?.add measure, record
+
+      colKeyList =
+        if serializedColKeysList.length > 0
+          serializedColKeysList
+        else
+          [serializedColKey]
+
+      for ckey in colKeyList
+        @colTotals[ckey]?.add measure, record
+
+        for rkey in serializedRowKeyList
+          @rowTotals[rkey]?.add measure, record
+          @map[rkey]?[ckey]?.add measure, record
+
     return
 
   values: (rowKey, colKey) ->
