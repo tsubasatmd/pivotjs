@@ -103,7 +103,7 @@ class Pivot
     @rowAttrs
 
   getSortedRowKeys: ->
-    @sortedRowKeys ||= @getSortedKeys @rowKeys, @rowAttrs
+    @sortedRowKeys ||= @getSortedKeys @rowKeys, @rowAttrs, 'row'
 
   getNestedRowKeys: ->
     @getNestedKeys @getSortedRowKeys()
@@ -115,7 +115,7 @@ class Pivot
     @colAttrs
 
   getSortedColKeys: ->
-    @sortedColKeys ||= @getSortedKeys @colKeys, @colAttrs
+    @sortedColKeys ||= @getSortedKeys @colKeys, @colAttrs, 'col'
 
   getNestedColKeys: ->
     @getNestedKeys @getSortedColKeys()
@@ -123,7 +123,7 @@ class Pivot
   getMeasureAttrs: ->
     @measureAttrs
 
-  getSortedKeys: (keys=[], attrs=[]) ->
+  getSortedKeys: (keys=[], attrs=[], sortKind=null) ->
     sort = (as, bs) -> # http://stackoverflow.com/a/4373421/112871
       rx = /(\d+)|(\D+)/g
       rd = /\d/
@@ -170,7 +170,7 @@ class Pivot
             pos = sortObject.position or 0
 
             [args_a, args_b] =
-              if sortObject.kind is 'row'
+              if sortKind is 'row'
                 [[key_a, _key], [key_b, _key]]
               else
                 [[_key, key_a], [_key, key_b]]
