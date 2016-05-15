@@ -29,7 +29,6 @@ describe 'Pivot', ->
           id: 'cat2'
           sort:
             type: 'measure'
-            kind: 'row'
             key: ['2016-01-01']
             position: 0
             ascending: true
@@ -40,7 +39,6 @@ describe 'Pivot', ->
           id: 'date'
           sort:
             type: 'measure'
-            kind: 'col'
             key: []
             position: 1
             ascending: true
