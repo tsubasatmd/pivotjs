@@ -30,7 +30,7 @@ describe 'Pivot', ->
           sort:
             type: 'measure'
             key: ['2016-01-01']
-            position: 0
+            measureIndex: 0
             ascending: true
         }
       ]
@@ -40,7 +40,7 @@ describe 'Pivot', ->
           sort:
             type: 'measure'
             key: []
-            position: 1
+            measureIndex: 1
             ascending: true
         }
       ]

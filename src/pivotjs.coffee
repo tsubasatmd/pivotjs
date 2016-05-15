@@ -167,7 +167,7 @@ class Pivot
             key_a = _.slice a, 0, (index_a + 1)
             key_b = _.slice b, 0, (index_a + 1)
             _key = sortObject.key
-            pos = sortObject.position or 0
+            pos = sortObject.measureIndex or 0
 
             [args_a, args_b] =
               if sortKind is 'row'
