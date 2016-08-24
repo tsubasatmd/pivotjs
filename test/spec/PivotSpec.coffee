@@ -48,12 +48,19 @@ describe 'Pivot', ->
         {
           name: 'val'
           key: 'val'
-          format: 'int'
+          format: 'float'
           aggregation: 'sum'
         }
         {
           name: 'val'
           key: 'val'
+          aggregation: 'average'
+        }
+        {
+          name: 'val'
+          key: 'val'
+          format: 'custom'
+          formatExpression: 'expression'
           aggregation: 'average'
         }
       ]
@@ -78,8 +85,13 @@ describe 'Pivot', ->
       pivot.rowTotals.should.be.empty
       pivot.colTotals.should.be.empty
 
-      pivot.measureAttrs[0].format.should.equal 'int'
+      pivot.measureAttrs[0].format.should.equal 'float'
+      pivot.measureAttrs[0].formatExpression.should.equal ',.2f'
       pivot.measureAttrs[1].format.should.equal 'int'
+      pivot.measureAttrs[1].formatExpression.should.equal ',f'
+
+      pivot.measureAttrs[2].format.should.equal 'custom'
+      pivot.measureAttrs[2].formatExpression.should.equal 'expression'
 
   describe 'getRowKeys', ->
     it 'should return rowsKey', ->
@@ -234,23 +246,23 @@ describe 'Pivot', ->
 
       # rowTotal for ['a', 'a1'] exist and aggregator have 1 record
       pivot.rowTotals[rowKey1].should.exist
-      pivot.rowTotals[rowKey1].aggregators.should.have.length 2
+      pivot.rowTotals[rowKey1].aggregators.should.have.length 3
       pivot.rowTotals[rowKey1].aggregators[0].aggregator.records.should.have.length 1
       pivot.rowTotals[rowKey1].aggregators[1].aggregator.records.should.have.length 1
 
       # rowTotal for ['a'] exist and aggregator have 1 record
       pivot.rowTotals[rowKey].should.exist
-      pivot.rowTotals[rowKey].aggregators.should.have.length 2
+      pivot.rowTotals[rowKey].aggregators.should.have.length 3
       pivot.rowTotals[rowKey].aggregators[0].aggregator.records.should.have.length 1
       pivot.rowTotals[rowKey].aggregators[1].aggregator.records.should.have.length 1
 
       pivot.colTotals[colKey1].should.exist
-      pivot.colTotals[colKey1].aggregators.should.have.length 2
+      pivot.colTotals[colKey1].aggregators.should.have.length 3
       pivot.colTotals[colKey1].aggregators[0].aggregator.records.should.have.length 1
       pivot.colTotals[colKey1].aggregators[1].aggregator.records.should.have.length 1
 
       # each aggregator for grandTotal composer have 1 record
-      pivot.grandTotal.aggregators.should.have.length 2
+      pivot.grandTotal.aggregators.should.have.length 3
       pivot.grandTotal.aggregators[0].aggregator.records.should.have.length 1
       pivot.grandTotal.aggregators[1].aggregator.records.should.have.length 1
 
@@ -267,28 +279,28 @@ describe 'Pivot', ->
 
       # rowTotal for ['a', 'a2'] exist and aggregator have 1 record
       pivot.rowTotals[rowKey2].should.exist
-      pivot.rowTotals[rowKey2].aggregators.should.have.length 2
+      pivot.rowTotals[rowKey2].aggregators.should.have.length 3
       pivot.rowTotals[rowKey2].aggregators[0].aggregator.records.should.have.length 1
       pivot.rowTotals[rowKey2].aggregators[1].aggregator.records.should.have.length 1
 
       # aggregator for rowTotal for ['a'] have 2 record (plus 1)
-      pivot.rowTotals[rowKey].aggregators.should.have.length 2
+      pivot.rowTotals[rowKey].aggregators.should.have.length 3
       pivot.rowTotals[rowKey].aggregators[0].aggregator.records.should.have.length 2
       pivot.rowTotals[rowKey].aggregators[1].aggregator.records.should.have.length 2
 
       # records of aggregator for rowTotals['a', 'a1'] is not changed
-      pivot.rowTotals[rowKey1].aggregators.should.have.length 2
+      pivot.rowTotals[rowKey1].aggregators.should.have.length 3
       pivot.rowTotals[rowKey1].aggregators[0].aggregator.records.should.have.length 1
       pivot.rowTotals[rowKey1].aggregators[1].aggregator.records.should.have.length 1
 
       # aggregator for colTotals['2016-01-01'] have 2 records (plus 1)
       pivot.colTotals[colKey1].should.exist
-      pivot.colTotals[colKey1].aggregators.should.have.length 2
+      pivot.colTotals[colKey1].aggregators.should.have.length 3
       pivot.colTotals[colKey1].aggregators[0].aggregator.records.should.have.length 2
       pivot.colTotals[colKey1].aggregators[1].aggregator.records.should.have.length 2
 
       # record count of aggregator for grandtoral is 2 (plus 1)
-      pivot.grandTotal.aggregators.should.have.length 2
+      pivot.grandTotal.aggregators.should.have.length 3
       pivot.grandTotal.aggregators[0].aggregator.records.should.have.length 2
       pivot.grandTotal.aggregators[1].aggregator.records.should.have.length 2
 

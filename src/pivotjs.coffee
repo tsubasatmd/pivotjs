@@ -22,13 +22,17 @@ class Pivot
     _.each @measureAttrs, (measure) =>
       if _.has measure, 'format'
         measure.formatExpression =
-          if _.has @formats, measure.format
+          if measure.format is 'custom'
+            measure.formatExpression
+          else if _.has @formats, measure.format
             @formats[measure.format]
           else
-            measure.format
+            @defaultFormatExpression
       else
         measure.format = @defaultFormat
         measure.formatExpression = @defaultFormatExpression
+
+
 
     @rowKeys = []
     @colKeys = []
