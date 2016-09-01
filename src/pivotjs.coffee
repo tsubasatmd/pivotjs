@@ -257,8 +257,10 @@ class Pivot
         @colTotals[ckey]?.add measure, record
 
         for rkey in serializedRowKeyList
-          @rowTotals[rkey]?.add measure, record
           @map[rkey]?[ckey]?.add measure, record
+
+      for rkey in serializedRowKeyList
+        @rowTotals[rkey]?.add measure, record
 
     return
 

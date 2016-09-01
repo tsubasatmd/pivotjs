@@ -318,7 +318,11 @@ describe 'Pivot', ->
       composer = pivot.map[pivot.serializeKey rowKey][pivot.serializeKey colKey]
       spy = sinon.spy composer, 'values'
 
-      pivot.values rowKey, colKey
+      values = pivot.values rowKey, colKey
+
+      values[0].value.should.equal 100
+      values[1].value.should.equal 100
+      values[2].value.should.equal 100
 
       spy.calledOnce.should.be.true
 
@@ -326,7 +330,11 @@ describe 'Pivot', ->
       composer = pivot.grandTotal
       spy = sinon.spy composer, 'values'
 
-      pivot.values [], []
+      values = pivot.values [], []
+
+      values[0].value.should.equal 1650
+      values[1].value.should.equal 206.25
+      values[2].value.should.equal 206.25
 
       spy.calledOnce.should.be.true
 
@@ -337,7 +345,11 @@ describe 'Pivot', ->
       composer = pivot.rowTotals[pivot.serializeKey rowKey]
       spy = sinon.spy composer, 'values'
 
-      pivot.values rowKey, colKey
+      values = pivot.values rowKey, colKey
+
+      values[0].value.should.equal 250
+      values[1].value.should.equal 125
+      values[2].value.should.equal 125
 
       spy.calledOnce.should.be.true
 
@@ -348,7 +360,11 @@ describe 'Pivot', ->
       composer = pivot.colTotals[pivot.serializeKey colKey]
       spy = sinon.spy composer, 'values'
 
-      pivot.values rowKey, colKey
+      values = pivot.values rowKey, colKey
+
+      values[0].value.should.equal 600
+      values[1].value.should.equal 150
+      values[2].value.should.equal 150
 
       spy.calledOnce.should.be.true
 
