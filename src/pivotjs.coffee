@@ -385,7 +385,7 @@ class Composer
       expression: measure.expression
       format: measure.format
       formatExpression: measure.formatExpression
-      value: agg.aggregator?.value() or null
+      value: if (agg.aggregator?.value() or agg.aggregator?.value() is 0) then agg.aggregator.value() else null
 
   value: (key, aggregation, pos=0) ->
     aggs =

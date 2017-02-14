@@ -64,6 +64,21 @@ describe 'Composer', ->
       values[1].format.should.equal 'int'
       values[1].formatExpression.should.equal ',f'
       values[1].value.should.equal 500
+      
+     it 'should handle 0 values correctly',  ->
+      measure1 =
+        name: 'measure1'
+        key: 'key1'
+        format: 'float'
+        formatExpression: ',.2f'
+        expression: 'exp1'
+        aggregation: 'sum'
+      record1 = {key1: 0}
+      composer.add measure1, record1
+
+      values = composer.values()
+      values.should.have.length 1
+      values[0].value.should.equal(0)
 
   describe 'value', ->
     it 'self aggregator should be used when pos is null', ->
