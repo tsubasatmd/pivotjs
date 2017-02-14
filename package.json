@@ -1,6 +1,6 @@
 {
   "name": "pivotjs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Pivot table with multiple measure implementation for Javascript",
   "main": "lib/pivotjs.js",
   "keywords": ["pivot", "pivot table", "multiple measure"],
