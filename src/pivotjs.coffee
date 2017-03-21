@@ -299,7 +299,11 @@ class Pivot
 
 
   sum = (measureKey, aggregator) ->
-    _.reduce aggregator.records, (summed, record) ->
+    notEmptyRecords = _.filter aggregator.records, (record) ->
+      !!record[measureKey] || record[measureKey] is 0
+    return null if notEmptyRecords.length is 0
+
+    _.reduce notEmptyRecords, (summed, record) ->
       summed + (parseFloat(record[measureKey]) or 0)
     , 0
 
@@ -318,7 +322,7 @@ class Pivot
     uniq.length
 
   average = (measureKey, aggregator) ->
-    (sum(measureKey, aggregator) / aggregator.records.length) or null
+    (sum(measureKey, aggregator) / counta(measureKey, aggregator)) or null
 
   max = (measureKey, aggregator) ->
     record = _.maxBy aggregator.records, (record) ->
@@ -326,9 +330,13 @@ class Pivot
     record[measureKey] or null
 
   min = (measureKey, aggregator) ->
-    record = _.minBy aggregator.records, (record) ->
+    notEmptyRecords = _.filter aggregator.records, (record) ->
+      !!record[measureKey] || record[measureKey] is 0
+    return null if notEmptyRecords.length is 0
+
+    record = _.minBy notEmptyRecords, (record) ->
       parseFloat(record[measureKey]) or 0
-    record[measureKey] or null
+    if record[measureKey] or record[measureKey] is 0 then record[measureKey] else null
 
   median = (measureKey, aggregator) ->
     records = _(aggregator.records).chain()
