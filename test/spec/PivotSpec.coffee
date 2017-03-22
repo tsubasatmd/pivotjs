@@ -15,6 +15,10 @@ describe 'Pivot', ->
     {val: 150, cat: 'a', cat2: 'a1', date: '2016-01-03'}
     {val: 300, cat: 'b', cat2: 'b1', date: '2016-01-02'}
     {val: 200, cat: 'c', cat2: 'c1', date: '2016-01-03'}
+    {val: 1000, cat: 'd', cat2: 'd1', date: '2016-01-04'}
+    {val: 0, cat: 'd', cat2: 'd1', date: '2016-01-04'}
+    {val: null, cat: 'd', cat2: 'd1', date: '2016-01-04'}
+    {val2: 100, val: null, cat: 'd', cat2: 'd1', date: '2016-01-05'}
   ]
 
   beforeEach ->
@@ -102,6 +106,7 @@ describe 'Pivot', ->
         ['a', 'a3']
         ['b', 'b1']
         ['c', 'c1']
+        ['d', 'd1']
       ]
       pivot.getRowKeys().should.eql expect
 
@@ -114,6 +119,7 @@ describe 'Pivot', ->
     it 'should return rowsKey', ->
       pivot.populate()
       expect = [
+        ['d', 'd1']
         ['c', 'c1']
         ['b', 'b1']
         ['a', 'a1']
@@ -127,26 +133,31 @@ describe 'Pivot', ->
       pivot.populate()
       nestedObject = pivot.getNestedRowKeys()
 
-      nestedObject.children.should.have.length 3
+      nestedObject.children.should.have.length 4
 
-      nestedObject.children[0].key.should.equal 'c'
+      nestedObject.children[0].key.should.equal 'd'
       nestedObject.children[0].children.should.have.length 1
-      nestedObject.children[0].children[0].key.should.equal 'c1'
+      nestedObject.children[0].children[0].key.should.equal 'd1'
       should.equal nestedObject.children[0].children[0].children, undefined
 
-      nestedObject.children[1].key.should.equal 'b'
+      nestedObject.children[1].key.should.equal 'c'
       nestedObject.children[1].children.should.have.length 1
-      nestedObject.children[1].children[0].key.should.equal 'b1'
+      nestedObject.children[1].children[0].key.should.equal 'c1'
       should.equal nestedObject.children[1].children[0].children, undefined
 
-      nestedObject.children[2].key.should.equal 'a'
-      nestedObject.children[2].children.should.have.length 3
-      nestedObject.children[2].children[0].key.should.equal 'a1'
+      nestedObject.children[2].key.should.equal 'b'
+      nestedObject.children[2].children.should.have.length 1
+      nestedObject.children[2].children[0].key.should.equal 'b1'
       should.equal nestedObject.children[2].children[0].children, undefined
-      nestedObject.children[2].children[1].key.should.equal 'a3'
-      should.equal nestedObject.children[2].children[1].children, undefined
-      nestedObject.children[2].children[2].key.should.equal 'a2'
-      should.equal nestedObject.children[2].children[2].children, undefined
+
+      nestedObject.children[3].key.should.equal 'a'
+      nestedObject.children[3].children.should.have.length 3
+      nestedObject.children[3].children[0].key.should.equal 'a1'
+      should.equal nestedObject.children[3].children[0].children, undefined
+      nestedObject.children[3].children[1].key.should.equal 'a3'
+      should.equal nestedObject.children[3].children[1].children, undefined
+      nestedObject.children[3].children[2].key.should.equal 'a2'
+      should.equal nestedObject.children[3].children[2].children, undefined
 
   describe 'getColKeys', ->
     it 'should return rowsKey', ->
@@ -155,6 +166,8 @@ describe 'Pivot', ->
         ['2016-01-01']
         ['2016-01-02']
         ['2016-01-03']
+        ['2016-01-04']
+        ['2016-01-05']
       ]
       pivot.getColKeys().should.eql expect
 
@@ -167,9 +180,11 @@ describe 'Pivot', ->
     it 'should return rowsKey', ->
       pivot.populate()
       expect = [
+        ['2016-01-05']
         ['2016-01-01']
         ['2016-01-03']
         ['2016-01-02']
+        ['2016-01-04']
       ]
       pivot.getSortedColKeys().should.eql expect
 
@@ -178,16 +193,22 @@ describe 'Pivot', ->
       pivot.populate()
       nestedObject = pivot.getNestedColKeys()
 
-      nestedObject.children.should.have.length 3
+      nestedObject.children.should.have.length 5
 
-      nestedObject.children[0].key.should.equal '2016-01-01'
+      nestedObject.children[0].key.should.equal '2016-01-05'
       should.equal nestedObject.children[0].children, undefined
 
-      nestedObject.children[1].key.should.equal '2016-01-03'
+      nestedObject.children[1].key.should.equal '2016-01-01'
       should.equal nestedObject.children[1].children, undefined
 
-      nestedObject.children[2].key.should.equal '2016-01-02'
+      nestedObject.children[2].key.should.equal '2016-01-03'
       should.equal nestedObject.children[2].children, undefined
+
+      nestedObject.children[3].key.should.equal '2016-01-02'
+      should.equal nestedObject.children[3].children, undefined
+      
+      nestedObject.children[4].key.should.equal '2016-01-04'
+      should.equal nestedObject.children[4].children, undefined
 
   describe 'getMeasureAttrs', ->
     it 'should return measures in param', ->
@@ -332,9 +353,9 @@ describe 'Pivot', ->
 
       values = pivot.values [], []
 
-      values[0].value.should.equal 1650
-      values[1].value.should.equal 206.25
-      values[2].value.should.equal 206.25
+      values[0].value.should.equal 2650
+      values[1].value.should.equal 265
+      values[2].value.should.equal 265
 
       spy.calledOnce.should.be.true
 
@@ -406,31 +427,36 @@ describe 'Pivot', ->
     it 'should return summed value', ->
       agg =
         records: records
-      pivot.aggregationFunctions['sum']('val', agg).should.equal 1650
+      pivot.aggregationFunctions['sum']('val', agg).should.equal 2650
+
+    it 'should return null if no value', ->
+      agg =
+        records: records
+      should.equal(pivot.aggregationFunctions['sum']('val3', agg), null)
 
   describe 'count', ->
     it 'should return record count', ->
       agg =
         records: records
-      pivot.aggregationFunctions['count']('val', agg).should.equal 8
+      pivot.aggregationFunctions['count']('val', agg).should.equal 12
 
   describe 'counta', ->
     it 'should return record count which value is null or undefined', ->
       agg =
         records: records
-      pivot.aggregationFunctions['counta']('val', agg).should.equal 8
+      pivot.aggregationFunctions['counta']('val', agg).should.equal 10
 
   describe 'unique', ->
     it 'should return unique record count', ->
       agg =
         records: records
-      pivot.aggregationFunctions['unique']('cat', agg).should.equal 3
+      pivot.aggregationFunctions['unique']('cat', agg).should.equal 4
 
   describe 'average', ->
-    it 'should return average', ->
+    it 'should return average of non-null values', ->
       agg =
         records: records
-      pivot.aggregationFunctions['average']('val', agg).should.equal 206.25
+      pivot.aggregationFunctions['average']('val', agg).should.equal 265
 
     it 'should return null when denominator is 0', ->
       agg =
@@ -441,13 +467,23 @@ describe 'Pivot', ->
     it 'should return max value', ->
       agg =
         records: records
-      pivot.aggregationFunctions['max']('val', agg).should.equal 400
+      pivot.aggregationFunctions['max']('val', agg).should.equal 1000
 
   describe 'min', ->
-    it 'should return min value', ->
+    it 'should return min value ignoring null', ->
       agg =
         records: records
-      pivot.aggregationFunctions['min']('val', agg).should.equal 100
+      pivot.aggregationFunctions['min']('val', agg).should.equal 0
+
+    it 'should return min value ignoring undefined', ->
+      agg =
+        records: records
+      pivot.aggregationFunctions['min']('val2', agg).should.equal 100
+
+    it 'should return null if no values', ->
+      agg =
+        records: records
+      should.equal(pivot.aggregationFunctions['min']('val3', agg), null)
 
   describe 'median', ->
     it 'should return median value', ->
